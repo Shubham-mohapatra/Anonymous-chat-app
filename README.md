@@ -106,11 +106,10 @@ A real-time anonymous chat application built with **React Native** and **Node.js
 ---
 
 1. Clone the Repository
-bash
-Copy
-Edit
+```bash 
 git clone https://github.com/Shubham-Mohapatra/Anonymous-chat-app.git
 cd Anonymous-chat-app
+```
 
 3. 🌐 Hosted on Expo Go
 🧪 Live Preview (Expo Link):
@@ -121,4 +120,5 @@ After running the following command, scan the QR code with the Expo Go app on yo
 
 ```bash
 npx expo start
+```
 Make sure you have the Expo Go app installed on your Android or iOS device.
