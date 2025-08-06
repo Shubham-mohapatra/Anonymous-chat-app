@@ -76,13 +76,77 @@ A real-time anonymous chat application built with React Native and Node.js that 
 - test-client.js - Client-side testing utilities
 - test-scalable.js - Scalability testing suite
 
-## Setup
-
-1. Install dependencies:
-```bash
-# Install frontend dependencies
-npm install
-
-# Install backend dependencies
-cd backend
-npm install```
+## Detailed Setup Guide
+### Prerequisites
+1. Install Node.js and npm:
+   
+   - Download and install Node.js from nodejs.org
+   - Verify installation:
+   ```
+   node --version
+   npm --version
+   ```
+2. Install React Native CLI:
+   
+   ```
+   npm install -g 
+   react-native-cli
+   ```
+### Frontend Setup
+1. Install project dependencies:
+   
+   ```
+   cd 
+   c:\Users\KIIT\Desktop\Anony
+   mous-chat
+   npm install
+   ```
+   This will install all required frontend packages including:
+   
+   - React Native
+   - Socket.io client
+   - Navigation components
+   - Notification services
+2. Configure environment:
+   
+   - Make sure your development environment is set up for React Native
+   - For Android: Install Android Studio and set up an emulator
+   - For iOS: Install Xcode (Mac only)
+### Backend Setup
+1. Install backend dependencies:
+   
+   ```
+   cd 
+   c:\Users\KIIT\Desktop\Anony
+   mous-chat\backend
+   npm install
+   ```
+   This installs:
+   
+   - Express.js server
+   - Socket.io for real-time communication
+   - Rate limiting middleware
+   - Other utility packages
+2. Configure the backend:
+   
+   - The server will use default ports (3000 for HTTP, 3001 for WebSocket)
+   - Make sure these ports are available on your system
+### Running the Application
+1. Start the backend server:
+   
+   ```
+   cd 
+   c:\Users\KIIT\Desktop\Anony
+   mous-chat\backend
+   node server.js
+   ```
+   The server should start and show a success message.
+2. Start the frontend (in a new terminal):
+   
+   ```
+   cd 
+   c:\Users\KIIT\Desktop\Anony
+   mous-chat
+   npm start
+   ```
+   This will start the Metro bundler.
