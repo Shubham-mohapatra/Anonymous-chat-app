@@ -48,6 +48,33 @@ A real-time anonymous chat application built with React Native and Node.js that 
 
 - **Utils**
   - `matchmaking.js` - User matching algorithm
+ 
+## Features in Detail
+1. Anonymous Matching
+   
+   - Users are automatically matched with random partners
+   - Queue-based matching system for efficient pairing
+2. Real-time Chat
+   
+   - Instant message delivery
+   - Typing indicators
+   - Connection status updates
+3. Scalability
+   
+   - Hybrid queue system for handling multiple users
+   - Scalable room management
+   - Rate limiting for API protection
+4. Notifications
+   
+   - Push notifications for new messages
+   - Connection status updates
+   - Simple and advanced notification options
+## Data Management
+- queue.json - Manages active user queue
+- stats.json - Stores chat statistics and metrics
+## Testing
+- test-client.js - Client-side testing utilities
+- test-scalable.js - Scalability testing suite
 
 ## Setup
 
