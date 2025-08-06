@@ -1,246 +1,113 @@
-📱 Anonymous Chat App
-A real-time anonymous chat application built with React Native and Node.js that allows users to connect and chat anonymously.
+# 📱 Anonymous Chat App
 
-🚀 Features
-🔒 Anonymous real-time messaging
+A real-time anonymous chat application built with **React Native** and **Node.js** that allows users to connect and chat anonymously.
 
-📶 Scalable chat system
+---
 
-⏳ Queue-based user matching
+## 🚀 Features
 
-🛡️ Rate limiting for security
+- 🔒 Anonymous real-time messaging  
+- 📶 Scalable chat system  
+- ⏳ Queue-based user matching  
+- 🛡️ Rate limiting for security  
+- 🔔 Real-time notifications  
+- 📱 Cross-platform support (Android, iOS, Web)  
 
-🔔 Real-time notifications
+---
 
-📱 Cross-platform support (Android, iOS, Web)
+## 🗂️ Project Structure
 
-🗂️ Project Structure
-Frontend
-App.js - Main application component
+### Frontend
 
-index.js - Application entry point
+- `App.js` - Main application component  
+- `index.js` - Application entry point  
 
-Screens
-ChatScreen.js - Main chat interface
+#### Screens
+- `ChatScreen.js` - Main chat interface  
+- `ConnectingScreen.js` - User matching and connection screen  
+- `HomeScreen.js` - Initial landing screen  
+- `socket.js` - WebSocket connection management  
 
-ConnectingScreen.js - User matching and connection screen
+#### Services
+- `NotificationService.js` - Handles push notifications  
+- `SimpleNotificationService.js` - Basic notification implementation  
 
-HomeScreen.js - Initial landing screen
+### Backend
 
-socket.js - WebSocket connection management
+- `server.js` - Main server entry point  
+- `app.js` - Express application setup  
 
-Services
-NotificationService.js - Handles push notifications
+#### Core Components
 
-SimpleNotificationService.js - Basic notification implementation
+- **Config**
+  - `socket.js` - WebSocket configuration  
 
-Backend
-server.js - Main server entry point
+- **Controllers**
+  - `scalableChatController.js` - Handles chat logic and scaling  
 
-app.js - Express application setup
+- **Models**
+  - `hybridQueue.js` - Queue implementation for user matching  
+  - `scalableQueue.js` - Scalable queue system  
+  - `scalableRoom.js` - Chat room management  
 
-Core Components
-Config
+- **Middleware**
+  - `rateLimiter.js` - Rate limiting for API protection  
 
-socket.js - WebSocket configuration
+- **Utils**
+  - `matchmaking.js` - User matching algorithm  
 
-Controllers
+---
 
-scalableChatController.js - Handles chat logic and scaling
+## 🔍 Features in Detail
 
-Models
+1. **Anonymous Matching**  
+   - Automatic random user pairing  
+   - Queue-based system for efficient matching  
 
-hybridQueue.js - Queue implementation for user matching
+2. **Real-time Chat**  
+   - Instant message delivery  
+   - Typing indicators  
+   - Live connection status  
 
-scalableQueue.js - Scalable queue system
+3. **Scalability**  
+   - Hybrid queue for large-scale user handling  
+   - Scalable room management  
+   - API rate limiting for protection  
 
-scalableRoom.js - Chat room management
+4. **Notifications**  
+   - Push notifications for new messages  
+   - Connection and disconnection alerts  
+   - Basic and advanced notification options  
 
-Middleware
+---
 
-rateLimiter.js - Rate limiting for API protection
+## 🧩 Data Management
 
-Utils
+- `queue.json` - Stores current user queue  
+- `stats.json` - Tracks chat statistics and metrics  
 
-matchmaking.js - User matching algorithm
+---
 
-🔍 Features in Detail
-Anonymous Matching
+## 🧪 Testing
 
-Automatic random user pairing
+- `test-client.js` - Client-side testing  
+- `test-scalable.js` - Scalability testing suite  
 
-Queue-based system for efficient matching
+---
 
-Real-time Chat
+## ⚙️ Quick Start
 
-Instant message delivery
+### ✅ Prerequisites
 
-Typing indicators
+- Node.js (v14 or higher)  
+- npm (v6 or higher)  
+- React Native development environment  
 
-Live connection status
+---
 
-Scalability
+### 🧑‍💻 Installation
 
-Hybrid queue for large-scale user handling
-
-Scalable room management
-
-API rate limiting for protection
-
-Notifications
-
-Push notifications for new messages
-
-Connection and disconnection alerts
-
-Basic and advanced notification options
-
-🧩 Data Management
-queue.json - Stores current user queue
-
-stats.json - Tracks chat statistics and metrics
-
-🧪 Testing
-test-client.js - Client-side testing
-
-test-scalable.js - Scalability testing suite
-
-⚙️ Quick Start
-Prerequisites
-Node.js (v14 or higher)
-
-npm (v6 or higher)
-
-React Native development environment
-
-🧑‍💻 Installation
-Clone the repository
-
-bash
-Copy
-Edit
+1. **Clone the repository**
+```bash
 git clone https://github.com/Shubham-Mohapatra/Anonymous-chat-app.git
 cd Anonymous-chat-app
-Start Metro Bundler
-
-bash
-Copy
-Edit
-npm start
-Install frontend dependencies
-
-bash
-Copy
-Edit
-npm install
-Install backend dependencies
-
-bash
-Copy
-Edit
-cd backend
-npm install
-🏃 Running the Application
-Start Backend Server
-bash
-Copy
-Edit
-cd backend
-node server.js
-Keep this terminal open.
-
-Start Frontend
-bash
-Copy
-Edit
-cd ..
-npm start
-Run on Device/Platform
-bash
-Copy
-Edit
-npm run android   # For Android  
-npm run ios       # For iOS  
-npm run web       # For Web  
-📱 How to Use
-Launch the application
-
-You'll be matched automatically with an online user
-
-Start chatting anonymously in real-time
-
-🏗️ Development Setup
-Android
-Install Android Studio
-
-Set up an AVD (Android Virtual Device)
-
-Ensure ANDROID_HOME is set
-
-iOS (Mac Only)
-Install Xcode
-
-Install CocoaPods
-
-bash
-Copy
-Edit
-cd ios && pod install
-🔍 Testing
-bash
-Copy
-Edit
-# Run test client
-cd backend
-node test-client.js
-
-# Test scalability
-node test-scalable.js
-🤝 Contributing
-Fork the repository
-
-Create a feature branch
-
-bash
-Copy
-Edit
-git checkout -b feature/AmazingFeature
-Commit your changes
-
-bash
-Copy
-Edit
-git commit -m 'Add some AmazingFeature'
-Push the branch
-
-bash
-Copy
-Edit
-git push origin feature/AmazingFeature
-Open a Pull Request
-
-⚠️ Common Issues
-Port already in use
-Check if port 3000 or 3001 is occupied
-
-Kill the process or change the port in backend/server.js
-
-Connection issues
-Ensure both frontend and backend are running
-
-Verify WebSocket connection URL
-
-Check firewall settings
-
-Dependency issues
-Delete node_modules and reinstall
-
-bash
-Copy
-Edit
-rm -rf node_modules
-npm install
-Ensure you're using a compatible Node.js version
-
-📄 License
-This project is licensed under the MIT License.
