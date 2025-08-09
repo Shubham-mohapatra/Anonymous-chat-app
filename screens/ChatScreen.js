@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, Keyboard, AppState } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, Keyboard, AppState, TouchableWithoutFeedback } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import socket from './socket';
 // Try to import the full notification service, fallback to simple service if there are issues
@@ -7,8 +7,8 @@ let NotificationService;
 try {
   NotificationService = require('../services/NotificationService').default;
 } catch (error) {
-  console.log('⚠️  Using simple notification service in ChatScreen');
-  NotificationService = require('../services/SimpleNotificationService').default;
+  console.log(' Using simple notification service in ChatScreen');
+  NotificationService = require('../services/PushServices').default;
 }
 
 const ChatScreen = ({ route, navigation }) => {
@@ -19,8 +19,13 @@ const ChatScreen = ({ route, navigation }) => {
   const [appState, setAppState] = useState(AppState.currentState);
   const flatListRef = useRef();
 
+  // Implement auto-scroll to end when new messages arrive
   useEffect(() => {
-    // Remove auto-scroll to end
+    if (messages.length > 0 && flatListRef.current) {
+      setTimeout(() => {
+        flatListRef.current.scrollToEnd({ animated: true });
+      }, 100);
+    }
   }, [messages]);
 
   // Handle app state changes for notifications
@@ -33,6 +38,29 @@ const ChatScreen = ({ route, navigation }) => {
     return () => subscription?.remove();
   }, []);
 
+  // Define the handlePeerDisconnect function outside the effect
+  const handlePeerDisconnect = () => {
+    setMessages(prev => [...prev, { system: true, message: 'Your chat partner has disconnected. Searching for a new partner…' }]);
+    setDisconnected(true);
+    
+    // Wait a moment to show the disconnection message before redirecting
+    setTimeout(() => {
+      navigation.replace('Connecting', { topics: route?.params?.topics || ['Any'] });
+    }, 2000);
+  };
+
+  // Add a new effect to check active connection when coming from background
+  useEffect(() => {
+    if (appState === 'active' && roomId) {
+      // Verify connection is still active when coming back to the app
+      socket.emit('check_connection', { roomId }, (response) => {
+        if (response && response.disconnected) {
+          handlePeerDisconnect();
+        }
+      });
+    }
+  }, [appState, roomId]);
+
   useEffect(() => {
     if (!roomId) return;
     
@@ -40,7 +68,7 @@ const ChatScreen = ({ route, navigation }) => {
       const isFromOtherUser = sender !== socket.id;
       setMessages(prev => [...prev, { sender, message, self: !isFromOtherUser }]);
       
-      // Show notification if app is in background and message is from other user
+      // Always show notification if app is in background and message is from other user
       if (isFromOtherUser && appState !== 'active') {
         NotificationService.showChatNotification(
           'Anonymous User',
@@ -59,26 +87,25 @@ const ChatScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     if (!roomId) return;
-    const handlePeerDisconnect = () => {
-      setMessages(prev => [...prev, { system: true, message: 'Your chat partner has disconnected. Searching for a new partner…' }]);
-      setDisconnected(true);
-      setTimeout(() => {
-        navigation.replace('Connecting', {});
-      }, 2000);
-    };
+    
     socket.on('peer_disconnected', handlePeerDisconnect);
+    
     return () => {
       socket.off('peer_disconnected', handlePeerDisconnect);
     };
-  }, [roomId, navigation]);
+  }, [roomId]);
 
   const sendMessage = () => {
     if (input.trim() && roomId && !disconnected) {
       socket.emit('message', { roomId, message: input });
       setMessages(prev => [...prev, { sender: socket.id, message: input, self: true }]);
       setInput('');
-      Keyboard.dismiss();
+      // Remove automatic keyboard dismiss - let user tap elsewhere to dismiss
     }
+  };
+
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
   };
 
   const renderItem = ({ item }) => {
@@ -99,43 +126,54 @@ const ChatScreen = ({ route, navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      {/* App Bar */}
-      <View style={styles.appBar}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <MaterialIcons name="arrow-back" size={26} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.appBarTitle}>Chat</Text>
-        <View style={{ width: 32 }} />
-      </View>
-      <View style={styles.chatArea}>
-        <FlatList
-          ref={flatListRef}
-          data={messages}
-          renderItem={renderItem}
-          keyExtractor={(_, idx) => idx.toString()}
-          style={styles.messagesList}
-          contentContainerStyle={{ paddingVertical: 16 }}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
-      
-      <View style={[styles.inputRow, disconnected && { opacity: 0.5 }]}> 
-        <TextInput
-          style={styles.input}
-          value={input}
-          onChangeText={setInput}
-          placeholder={disconnected ? 'Waiting for new partner...' : 'Type a message...'}
-          placeholderTextColor="#A1A4B2"
-          onSubmitEditing={sendMessage}
-          returnKeyType="send"
-          editable={!disconnected}
-        />
-        <TouchableOpacity style={styles.sendButton} onPress={sendMessage} disabled={disconnected}>
-          <MaterialIcons name="send" size={22} color="#fff" />
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+    <TouchableWithoutFeedback onPress={dismissKeyboard}>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        {/* App Bar */}
+        <View style={styles.appBar}>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+            <MaterialIcons name="arrow-back" size={26} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.appBarTitle}>Chat</Text>
+          <View style={{ width: 32 }} />
+        </View>
+        
+        <TouchableWithoutFeedback onPress={dismissKeyboard}>
+          <View style={styles.chatArea}>
+            <FlatList
+              ref={flatListRef}
+              data={messages}
+              renderItem={renderItem}
+              keyExtractor={(_, idx) => idx.toString()}
+              style={styles.messagesList}
+              contentContainerStyle={{ paddingVertical: 16 }}
+              showsVerticalScrollIndicator={false}
+              onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+              onLayout={() => flatListRef.current?.scrollToEnd({ animated: false })}
+              keyboardShouldPersistTaps="handled"
+            />
+          </View>
+        </TouchableWithoutFeedback>
+        
+        <View style={[styles.inputRow, disconnected && { opacity: 0.5 }]}> 
+          <TextInput
+            style={styles.input}
+            value={input}
+            onChangeText={setInput}
+            placeholder={disconnected ? 'Waiting for new partner...' : 'Type a message...'}
+            placeholderTextColor="#A1A4B2"
+            onSubmitEditing={sendMessage}
+            returnKeyType="send"
+            editable={!disconnected}
+            blurOnSubmit={false}
+            multiline={true}
+            maxLength={500}
+          />
+          <TouchableOpacity style={styles.sendButton} onPress={sendMessage} disabled={disconnected}>
+            <MaterialIcons name="send" size={22} color="#fff" />
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -238,7 +276,7 @@ const styles = StyleSheet.create({
   },
   inputRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     backgroundColor: '#20222A',
     borderRadius: 24,
     paddingHorizontal: 12,
@@ -250,6 +288,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.10,
     shadowRadius: 8,
+    minHeight: 50,
   },
   input: {
     flex: 1,
@@ -258,6 +297,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     backgroundColor: 'transparent',
+    maxHeight: 100,
+    textAlignVertical: 'top',
   },
   sendButton: {
     backgroundColor: '#246BFD',
@@ -266,7 +307,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginLeft: 8,
     elevation: 2,
+    alignSelf: 'flex-end',
   },
 });
 
-export default ChatScreen; 
+export default ChatScreen;

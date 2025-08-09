@@ -8,7 +8,7 @@ try {
   NotificationService = require('../services/NotificationService').default;
 } catch (error) {
   console.log('⚠️  Using simple notification service in ConnectingScreen');
-  NotificationService = require('../services/SimpleNotificationService').default;
+  NotificationService = require('../services/PushServices').default;
 }
 
 const ConnectingScreen = ({ navigation, route }) => {
