@@ -185,4 +185,4 @@ After running the following command, scan the QR code with the Expo Go app on yo
 npx expo start
 ```
 Make sure you have the Expo Go app installed on your Android or iOS device.
->>>>>>> 41429ef108dc89c0dbaa1f99412d8592f87867b7
+
