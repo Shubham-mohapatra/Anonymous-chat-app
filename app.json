@@ -31,6 +31,12 @@
         "projectId": "12d6e976-2502-4535-b5ba-f8d46a78e544"
       }
     },
-    "owner": "shubham290704"
+    "owner": "shubham290704",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/12d6e976-2502-4535-b5ba-f8d46a78e544"
+    }
   }
 }

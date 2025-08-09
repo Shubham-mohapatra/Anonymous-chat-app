@@ -1,7 +1,7 @@
 const { io } = require("socket.io-client");
 
 console.log(' Testing Scalable Anonymous Chat Backend');
-console.log('==========================================');
+
 
 // Test multiple connections
 const connections = [];
@@ -59,7 +59,7 @@ setTimeout(() => {
   console.log('\n Testing rate limiting...');
   const testSocket = connections[0];
   
-  // Send many messages quickly
+ 
   for (let i = 0; i < 35; i++) {
     testSocket.emit("message", { 
       roomId: "test_room", 
